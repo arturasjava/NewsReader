@@ -23,7 +23,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     //https://github.com/HackerNews/API
     public static final String TAG = "app_test";
+
     ArrayList<String> titles = new ArrayList<>();
+    ArrayList<String> content = new ArrayList<>();
     ArrayAdapter arrayAdapter;
 
     SQLiteDatabase articlesDB;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         articlesDB = this.openOrCreateDatabase("Articles", MODE_PRIVATE, null);
         articlesDB.execSQL("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, articleId INTEGER, title VARCHAR, content VARCHAR)");
+
 
         DownloadTask task = new DownloadTask();
         try {
@@ -49,6 +52,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateListView() {
         Cursor c = articlesDB.rawQuery("SELECT * FROM articles", null);
+        int contentIndex = c.getColumnIndex("content");
+        int titleIndex = c.getColumnIndex("title");
+
+        if (c.moveToFirst()) {
+            titles.clear();
+            content.clear();
+
+            do {
+                titles.add(c.getString(titleIndex));
+                content.add(c.getString(contentIndex));
+
+            } while (c.moveToNext());
+
+            arrayAdapter.notifyDataSetChanged();
+        }
     }
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
@@ -76,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONArray jsonArray = new JSONArray(result);
 
-                int numberOfItems = 20;
-                if (jsonArray.length() < 20) {
+                int numberOfItems = 5;
+                if (jsonArray.length() < 5) {
                     numberOfItems = jsonArray.length();
                 }
 
@@ -127,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                         statement.bindString(1, articleId);
                         statement.bindString(2, articleTitle);
                         statement.bindString(3, articleContent);
-
                         statement.execute();
                     }
                 }
