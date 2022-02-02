@@ -8,6 +8,8 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 url = new URL(urls[0]);
+
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = urlConnection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -57,7 +60,35 @@ public class MainActivity extends AppCompatActivity {
                     result += current;
                     data = inputStreamReader.read();
                 }
-                Log.i(TAG,"URL Content: " + result);
+
+                JSONArray jsonArray = new JSONArray(result);
+
+                int numberOfItems = 20;
+                if (jsonArray.length() < 20) {
+                    numberOfItems = jsonArray.length();
+                }
+
+                for (int i = 0; i < numberOfItems; i++) {
+                    String articleId = jsonArray.getString(i);
+
+                    url = new URL("https://hacker-news.firebaseio.com/v0/item/" + articleId + ".json?print=pretty");
+
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    inputStream = urlConnection.getInputStream();
+                    inputStreamReader = new InputStreamReader(inputStream);
+                    data = inputStreamReader.read();
+
+                    String articleInfo = "";
+
+                    while (data != -1) {
+                        char current = (char) data;
+                        articleInfo += current;
+                        data = inputStreamReader.read();
+                    }
+                    Log.i(TAG, "Article info: " + articleInfo);
+                }
+
+                Log.i(TAG, "URL Content: " + result);
                 return result;
 
             } catch (Exception e) {
