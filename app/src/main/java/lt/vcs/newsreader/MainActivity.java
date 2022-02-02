@@ -2,6 +2,7 @@ package lt.vcs.newsreader;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -44,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = urlConnection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                int data = inputStreamReader.read();
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = inputStreamReader.read()
+                }
+                Log.i("URL Content:", result);
+                return result;
 
             } catch (Exception e) {
                 e.printStackTrace();
