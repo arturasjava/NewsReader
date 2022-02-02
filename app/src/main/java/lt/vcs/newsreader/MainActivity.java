@@ -92,7 +92,21 @@ public class MainActivity extends AppCompatActivity {
                     if (!jsonObject.isNull("title") && !jsonObject.isNull("url")) {
                         String articleTitle = jsonObject.getString("title");
                         String articleUrl = jsonObject.getString("url");
-                        Log.i(TAG, "Title and URL: " + articleTitle + " URL " + articleUrl);
+//                        Log.i(TAG, "Title and URL: " + articleTitle + " URL " + articleUrl);
+
+                        url = new URL(articleUrl);
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        inputStream = urlConnection.getInputStream();
+                        inputStreamReader = new InputStreamReader(inputStream);
+
+                        data = inputStreamReader.read();
+                        String articleContent = "";
+                        while (data != -1) {
+                            char current = (char) data;
+                            articleContent += current;
+                            data = inputStreamReader.read();
+                        }
+                        Log.i(TAG, "HTML: " + articleTitle);
                     }
                 }
 
