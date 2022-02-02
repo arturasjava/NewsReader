@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     //https://github.com/HackerNews/API
-
+    public static final String TAG = "app_test";
     ArrayList<String> titles = new ArrayList<>();
     ArrayAdapter arrayAdapter;
 
@@ -25,9 +25,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DownloadTask task = new DownloadTask();
+        try {
+            task.execute("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
+        } catch (Exception e) {
+        }
+
         ListView listView = findViewById(R.id.listView);
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, titles);
-
         listView.setAdapter(arrayAdapter);
     }
 
@@ -50,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
                 while (data != -1) {
                     char current = (char) data;
                     result += current;
-                    data = inputStreamReader.read()
+                    data = inputStreamReader.read();
                 }
-                Log.i("URL Content:", result);
+                Log.i(TAG,"URL Content: " + result);
                 return result;
 
             } catch (Exception e) {
