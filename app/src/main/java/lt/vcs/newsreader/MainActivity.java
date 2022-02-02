@@ -9,6 +9,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -85,7 +86,14 @@ public class MainActivity extends AppCompatActivity {
                         articleInfo += current;
                         data = inputStreamReader.read();
                     }
-                    Log.i(TAG, "Article info: " + articleInfo);
+//                    Log.i(TAG, "Article info: " + articleInfo);
+                    JSONObject jsonObject = new JSONObject(articleInfo);
+
+                    if (!jsonObject.isNull("title") && !jsonObject.isNull("url")) {
+                        String articleTitle = jsonObject.getString("title");
+                        String articleUrl = jsonObject.getString("url");
+                        Log.i(TAG, "Title and URL: " + articleTitle + " URL " + articleUrl);
+                    }
                 }
 
                 Log.i(TAG, "URL Content: " + result);
