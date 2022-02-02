@@ -1,5 +1,6 @@
 package lt.vcs.newsreader;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
@@ -44,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.listView);
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, titles);
         listView.setAdapter(arrayAdapter);
+    }
+
+    public void updateListView() {
+        Cursor c = articlesDB.rawQuery("SELECT * FROM articles", null);
     }
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
